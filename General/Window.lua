@@ -155,9 +155,9 @@ end
 local TextBox = {}
 TextBox.__index = TextBox
 
-function TextBox.new(theme, text, placeholderText)
+function TextBox.new(theme, text, placeholderText, initialState)
 	local self = setmetatable({}, TextBox)
-	self.Value = ""
+	self.Value = initialState or ""
 
 	self.Instance = e("Frame", {
 		Name = text,
@@ -199,7 +199,7 @@ function TextBox.new(theme, text, placeholderText)
 				ClearTextOnFocus = false,
 				Font = Enum.Font.Gotham,
 				PlaceholderText = placeholderText or "Text",
-				Text = "",
+				Text = self.Value,
 				TextColor3 = theme.TextboxText,
 				PlaceholderColor3 = theme.TextboxPlaceholder,
 				TextSize = 13,
@@ -461,8 +461,8 @@ function Section:CreateButton(text, buttonText)
 	return object
 end
 
-function Section:CreateTextbox(text, placeholderText)
-	local object = TextBox.new(self.Theme, text, placeholderText)
+function Section:CreateTextbox(text, placeholderText, initialState)
+	local object = TextBox.new(self.Theme, text, placeholderText, initialState)
 	object.Instance.Parent = self.Content
 
 	self.Elements += 1

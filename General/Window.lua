@@ -350,7 +350,7 @@ function Toggle.new(theme, text, initialState)
 	end)
 	self.Toggle.MouseButton1Up:Connect(function()
 		self.State = not self.State
-		self.ToggledInstance:Fire()
+		self.ToggledInstance:Fire(self.State)
 
 		if self.State then
 			TweenService:Create(self.Outer, TweenInfo.new(0.2), { ImageColor3 = theme.ToggleToggled }):Play()

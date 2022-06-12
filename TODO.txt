@@ -1,0 +1,11 @@
+-[X] rename light theme keys
+-[X] sectors
+
+-[] checkbox
+-[] dropdown
+-[] slider
+-[] text box
+-[] button
+-[] keybind
+-[] color picker
+-[] label

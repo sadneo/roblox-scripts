@@ -832,7 +832,8 @@ end
 
 function Window:Mount(parent)
 	if parent == nil then
-		parent = if game:GetService("RunService") then game:GetService("Players").LocalPlayer.PlayerGui else CoreGui
+		parent = game:GetService("RunService"):IsStudio() and game:GetService("Players").LocalPlayer.PlayerGui
+			or CoreGui
 	end
 
 	self:SelectCategory(self.FirstCategory)

@@ -322,8 +322,7 @@ function Toggle.new(theme, text, initialState)
 	self.Toggled = self.ToggledInstance.Event
 
 	if self.State then
-		TweenService:Create(self.Outer, TweenInfo.new(0.2), { ImageColor3 = theme.checkbox_checked }):Play()
-		TweenService:Create(self.Toggle, TweenInfo.new(0.2), { ImageColor3 = theme.checkbox_checked }):Play()
+		self:SetState(true)
 	end
 
 	self.Toggle.MouseEnter:Connect(function()

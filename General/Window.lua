@@ -373,6 +373,7 @@ end
 
 function Toggle:SetState(state)
 	self.State = state
+	self.ToggledInstance:Fire(self.State)
 
 	if self.State then
 		TweenService:Create(self.Outer, TweenInfo.new(0.2), { ImageColor3 = self.Theme.ToggleOuter }):Play()

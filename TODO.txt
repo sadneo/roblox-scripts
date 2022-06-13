@@ -1,11 +1,12 @@
 -[X] rename light theme keys
 -[X] sectors
+-[] dragging for the topbar
 
--[] checkbox
+-[X] checkbox
 -[] dropdown
 -[] slider
--[] text box
--[] button
+-[X] text box
+-[X] button
 -[] keybind
 -[] color picker
--[] label
+-[X] label

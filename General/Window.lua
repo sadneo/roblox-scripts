@@ -675,6 +675,7 @@ function Window.new(title, theme, toggleKey)
 	self.Theme = theme
 	self.ToggleKey = toggleKey
 	self.FirstCategory = nil
+	self.Offset = UDim2.fromOffset(0, 0)
 
 	self.ScreenGui = e("ScreenGui", {
 		Name = title,
@@ -776,9 +777,33 @@ function Window.new(title, theme, toggleKey)
 	self.Window = self.ScreenGui.Window
 	self.Content = self.Window.ContentFrame
 	self.Sidebar = self.Window.Sidebar
+	self.Topbar = self.Window.Topbar
+	self.Title = self.Topbar.TitleLabel
 	self.PageLayout = self.Content.UIPageLayout
 
 	self.Visible = true
+
+	local gripping = false
+	local dragStart
+	self.Topbar.InputBegan:Connect(function(input, gameProcessedEvent)
+		if not gameProcessedEvent and input.UserInputType == Enum.UserInputType.MouseButton1 then
+			gripping = true
+			dragStart = input.Position
+		end
+	end)
+	UserInputService.InputEnded:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton1 then
+			gripping = false
+		end
+	end)
+	UserInputService.InputChanged:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseMovement and gripping then
+			local delta = input.Position - dragStart
+			dragStart = input.Position
+			self.Offset += UDim2.fromOffset(delta.X, delta.Y)
+			self.Window.Position = UDim2.new(0.5, 0, 0.5, 0) + self.Offset
+		end
+	end)
 
 	UserInputService.InputEnded:Connect(function(input, gameProcessedEvent)
 		if gameProcessedEvent then
@@ -793,17 +818,25 @@ function Window.new(title, theme, toggleKey)
 	return self
 end
 
+function Window:GetTitle()
+	return self.Title.Text
+end
+
 function Window:GetTheme()
 	return self.Theme
+end
+
+function Window:SetTitle(text)
+	self.Title.Text = text
 end
 
 function Window:SetVisible(visible)
 	self.Visible = visible
 
 	if self.Visible then
-		self.Window:TweenPosition(UDim2.new(0.5, 0, 0.5, 0), "Out", "Sine", 0.5, true)
+		self.Window:TweenPosition(UDim2.new(0.5, 0, 0.5, 0) + self.Offset, "Out", "Sine", 0.5, true)
 	else
-		self.Window:TweenPosition(UDim2.new(0.5, 0, 1.5, 0), "Out", "Sine", 0.5, true)
+		self.Window:TweenPosition(UDim2.new(0.5, 0, 1.5, 0) + self.Offset, "Out", "Sine", 0.5, true)
 	end
 end
 

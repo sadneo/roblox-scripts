@@ -376,11 +376,11 @@ function Toggle:SetState(state)
 	self.ToggledInstance:Fire(self.State)
 
 	if self.State then
-		TweenService:Create(self.Outer, TweenInfo.new(0.2), { ImageColor3 = self.Theme.ToggleOuter }):Play()
-		TweenService:Create(self.Toggle, TweenInfo.new(0.2), { ImageColor3 = self.Theme.ToggleInner }):Play()
-	else
 		TweenService:Create(self.Outer, TweenInfo.new(0.2), { ImageColor3 = self.Theme.ToggleToggled }):Play()
 		TweenService:Create(self.Toggle, TweenInfo.new(0.2), { ImageColor3 = self.Theme.ToggleToggled }):Play()
+	else
+		TweenService:Create(self.Outer, TweenInfo.new(0.2), { ImageColor3 = self.Theme.ToggleOuter }):Play()
+		TweenService:Create(self.Toggle, TweenInfo.new(0.2), { ImageColor3 = self.Theme.ToggleInner }):Play()
 	end
 end
 

@@ -851,7 +851,7 @@ end
 
 function Window:SelectCategory(categoryName)
 	local content = self.Content
-	local thisCategory = content[categoryName]
+	local thisCategory = content:FindFirstChild(categoryName)
 
 	for _, category in ipairs(content:GetChildren()) do
 		if category:IsA("ScrollingFrame") and category ~= thisCategory then

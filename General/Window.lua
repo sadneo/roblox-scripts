@@ -254,7 +254,7 @@ Toggle.__index = Toggle
 
 function Toggle.new(theme, text, initialState)
 	local self = setmetatable({}, Toggle)
-	self.State = initialState or false
+	self.Value = initialState or false
 	self.Theme = theme
 
 	self.Instance = e("Frame", {
@@ -318,8 +318,8 @@ function Toggle.new(theme, text, initialState)
 	self.ToggledInstance = self.Instance.Toggled
 	self.Toggled = self.ToggledInstance.Event
 
-	if self.State then
-		self:SetState(true)
+	if self.Value then
+		self:SetValue(true)
 	end
 
 	self.Toggle.MouseEnter:Connect(function()
@@ -331,24 +331,24 @@ function Toggle.new(theme, text, initialState)
 		TweenService:Create(self.Outer, TweenInfo.new(0.2), { ImageColor3 = lighterTheme }):Play()
 	end)
 	self.Toggle.MouseLeave:Connect(function()
-		if not self.State then
+		if not self.Value then
 			TweenService:Create(self.Outer, TweenInfo.new(0.2), { ImageColor3 = theme.ToggleOuter }):Play()
 		else
 			TweenService:Create(self.Outer, TweenInfo.new(0.2), { ImageColor3 = theme.ToggleToggled }):Play()
 		end
 	end)
 	self.Toggle.MouseButton1Down:Connect(function()
-		if self.State then
+		if self.Value then
 			TweenService:Create(self.Toggle, TweenInfo.new(0.2), { ImageColor3 = theme.ToggleOuter }):Play()
 		else
 			TweenService:Create(self.Toggle, TweenInfo.new(0.2), { ImageColor3 = theme.ToggleToggled }):Play()
 		end
 	end)
 	self.Toggle.MouseButton1Up:Connect(function()
-		self.State = not self.State
-		self.ToggledInstance:Fire(self.State)
+		self.Value = not self.Value
+		self.ToggledInstance:Fire(self.Value)
 
-		if self.State then
+		if self.Value then
 			TweenService:Create(self.Outer, TweenInfo.new(0.2), { ImageColor3 = theme.ToggleToggled }):Play()
 		else
 			TweenService:Create(self.Outer, TweenInfo.new(0.2), { ImageColor3 = theme.ToggleOuter }):Play()
@@ -359,29 +359,29 @@ function Toggle.new(theme, text, initialState)
 	return self
 end
 
-function Toggle:GetState()
-	return self.State
-end
-
 function Toggle:GetText()
 	return self.TextLabel.Text
 end
 
-function Toggle:SetState(state)
-	self.State = state
-	self.ToggledInstance:Fire(self.State)
+function Toggle:GetValue()
+	return self.Value
+end
 
-	if self.State then
+function Toggle:SetText(text)
+	self.TextLabel.Text = text
+end
+
+function Toggle:SetValue(value)
+	self.Value = value
+	self.ToggledInstance:Fire(self.Value)
+
+	if self.Value then
 		TweenService:Create(self.Outer, TweenInfo.new(0.2), { ImageColor3 = self.Theme.ToggleToggled }):Play()
 		TweenService:Create(self.Toggle, TweenInfo.new(0.2), { ImageColor3 = self.Theme.ToggleToggled }):Play()
 	else
 		TweenService:Create(self.Outer, TweenInfo.new(0.2), { ImageColor3 = self.Theme.ToggleOuter }):Play()
 		TweenService:Create(self.Toggle, TweenInfo.new(0.2), { ImageColor3 = self.Theme.ToggleInner }):Play()
 	end
-end
-
-function Toggle:SetText(text)
-	self.TextLabel.Text = text
 end
 
 local Section = {}

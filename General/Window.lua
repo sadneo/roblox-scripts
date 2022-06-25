@@ -73,6 +73,8 @@ function Button.new(theme, text, buttonText)
 		Size = UDim2.new(1, 0, 0, 25),
 		ZIndex = 2,
 	}, {
+		Activated = e("BindableEvent", {}),
+
 		Title = e("TextLabel", {
 			Font = Enum.Font.Gotham,
 			Text = text,
@@ -118,7 +120,8 @@ function Button.new(theme, text, buttonText)
 	self.TextButton = self.Instance.Container.Button
 	self.Background = self.Instance.Container.Background
 
-	self.Activated = self.TextButton.MouseButton1Up
+	self.ActivatedInstance = self.Instance.Activated
+	self.Activated = self.ActivatedInstance.Event
 
 	self.TextButton.MouseEnter:Connect(function()
 		TweenService:Create(self.Background, TweenInfo.new(0.2), { ImageColor3 = theme.ButtonBackgroundHover }):Play()
@@ -131,6 +134,9 @@ function Button.new(theme, text, buttonText)
 	end)
 	self.TextButton.MouseButton1Up:Connect(function()
 		TweenService:Create(self.Background, TweenInfo.new(0.2), { ImageColor3 = theme.ButtonBackground }):Play()
+	end)
+	self.TextButton.Activated:Connect(function()
+		self.ActivatedInstance:Fire()
 	end)
 
 	return self
@@ -165,6 +171,8 @@ function TextBox.new(theme, text, placeholderText, initialState)
 		Size = UDim2.new(1, 0, 0, 25),
 		ZIndex = 2,
 	}, {
+		FocusLost = e("BindableEvent", {}),
+
 		Title = e("TextLabel", {
 			Font = Enum.Font.Gotham,
 			Text = text,
@@ -213,6 +221,8 @@ function TextBox.new(theme, text, placeholderText, initialState)
 	self.TextLabel = self.Instance.Title
 	self.Background = self.Instance.Container.Background
 	self.Textbox = self.Instance.Container.Textbox
+	self.FocusLostInstance = self.Instance.FocusLost
+	self.FocusLost = self.FocusLostInstance.Event
 
 	self.Background.MouseEnter:Connect(function()
 		TweenService:Create(self.Textbox, TweenInfo.new(0.1), { TextColor3 = theme.TextboxTextHover }):Play()
@@ -224,11 +234,10 @@ function TextBox.new(theme, text, placeholderText, initialState)
 		TweenService:Create(self.Background, TweenInfo.new(0.2), { ImageColor3 = theme.TextboxBackgroundHover }):Play()
 	end)
 	self.Textbox.FocusLost:Connect(function()
+		self.Textbox.FocusLostInstance:Fire()
 		TweenService:Create(self.Background, TweenInfo.new(0.2), { ImageColor3 = theme.TextboxBackground }):Play()
 		TweenService:Create(self.Textbox, TweenInfo.new(0.1), { TextColor3 = theme.TextboxText }):Play()
 	end)
-
-	self.FocusLost = self.Textbox.FocusLost
 
 	return self
 end

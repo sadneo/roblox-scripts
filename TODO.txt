@@ -8,7 +8,7 @@
 -[X] text box
 -[X] button
 -[X] checkbox
--[] dropdown
--[] slider
 -[] keybind
+-[] slider
+-[] dropdown
 -[] color picker

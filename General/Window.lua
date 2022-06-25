@@ -157,7 +157,7 @@ TextBox.__index = TextBox
 
 function TextBox.new(theme, text, placeholderText, initialState)
 	local self = setmetatable({}, TextBox)
-	self.Value = initialState or ""
+	local value = initialState or ""
 
 	self.Instance = e("Frame", {
 		Name = text,
@@ -199,7 +199,7 @@ function TextBox.new(theme, text, placeholderText, initialState)
 				ClearTextOnFocus = false,
 				Font = Enum.Font.Gotham,
 				PlaceholderText = placeholderText or "Text",
-				Text = self.Value,
+				Text = value,
 				TextColor3 = theme.TextboxText,
 				PlaceholderColor3 = theme.TextboxPlaceholder,
 				TextSize = 13,
@@ -226,8 +226,6 @@ function TextBox.new(theme, text, placeholderText, initialState)
 	self.Textbox.FocusLost:Connect(function()
 		TweenService:Create(self.Background, TweenInfo.new(0.2), { ImageColor3 = theme.TextboxBackground }):Play()
 		TweenService:Create(self.Textbox, TweenInfo.new(0.1), { TextColor3 = theme.TextboxText }):Play()
-
-		self.Value = self.Textbox.Text
 	end)
 
 	self.FocusLost = self.Textbox.FocusLost
@@ -235,12 +233,12 @@ function TextBox.new(theme, text, placeholderText, initialState)
 	return self
 end
 
-function TextBox:GetValue()
-	return self.Value
-end
-
 function TextBox:GetText()
 	return self.TextLabel.Text
+end
+
+function TextBox:GetValue()
+	return self.Textbox.Text
 end
 
 function TextBox:SetText(text)
@@ -248,8 +246,7 @@ function TextBox:SetText(text)
 end
 
 function TextBox:SetValue(text)
-	self.Value = text
-	self.Instance.Textbox.Text = self.Value
+	self.Instance.Textbox.Text = text
 end
 
 local Toggle = {}

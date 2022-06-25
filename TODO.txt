@@ -1,12 +1,14 @@
 -[X] rename light theme keys
 -[X] sectors
--[] dragging for the topbar
+-[X] dragging for the topbar
+-[] turn categories into scrolling frames
+-[] add destroy methods for everything
 
+-[X] label
+-[X] text box
+-[X] button
 -[X] checkbox
 -[] dropdown
 -[] slider
--[X] text box
--[X] button
 -[] keybind
 -[] color picker
--[X] label

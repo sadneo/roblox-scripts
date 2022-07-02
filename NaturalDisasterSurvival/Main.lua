@@ -116,7 +116,7 @@ do
 	local disableAll = soundsSection:CreateToggle("Disable All")
 	for _, sound in ipairs(workspace.ContentModel.Sounds:GetChildren()) do
 		local originalVolume = sound.Volume
-		local soundToggle = soundsSection:CreateToggle('Disable "' .. sound.Name .. '"', disableAll:GetState())
+		local soundToggle = soundsSection:CreateToggle('Disable "' .. sound.Name .. '"', disableAll:GetValue())
 		soundToggle.Toggled:Connect(function(state)
 			sound.Volume = state and 0 or originalVolume
 			if state then

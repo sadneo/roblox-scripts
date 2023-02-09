@@ -1,0 +1,16 @@
+---
+base: roblox
+globals:
+  getrawmetatable:
+    args:
+      - type: ...
+  firetouchinterest:
+    args:
+      - type: ...
+  setreadonly:
+    args:
+      - type: ...
+      # - type: table
+      # - type: boolean
+  checkcaller:
+    args: []

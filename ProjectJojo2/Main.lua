@@ -205,6 +205,14 @@ local autofarmDummy = false
 local ongoingQuestActive = false
 local ongoingQuest = nil
 
+local teleportCheck = false
+Players.LocalPlayer.OnTeleport:Connect(function()
+	if not teleportCheck and queue_on_teleport then
+		teleportCheck = true
+		queue_on_teleport("loadstring(game:HttpGet('https://raw.githubusercontent.com/sadneo/roblox-scripts/refs/heads/main/ProjectJojo2/Main.lua'))()")
+	end
+end)
+
 local function findQuestItem(itemDetails)
     local npc = npcs:FindFirstChild(itemDetails.QuestNPC)
     local npcClickDetector = npc:FindFirstChildWhichIsA("ClickDetector", true)
@@ -311,7 +319,7 @@ end)
 local Finity = loadstring(game:HttpGetAsync("https://raw.githubusercontent.com/bloodball/UI-Librarys/refs/heads/main/Finity%20UI%20Lib"))()
 print(("\n"):rep(100))
 
-local interface = Finity.new(true, "Neo's Project Jojo 2", UDim2.fromOffset(450, 300))
+local interface = Finity.new(true, "Neo's Project Jojo 2", UDim2.fromOffset(450, 350))
 interface.ChangeToggleKey(Enum.KeyCode.Delete)
 local mainCategory = interface:Category("Main")
 local generalSector = mainCategory:Sector("General")
@@ -339,6 +347,24 @@ end)
 
 
 local teleportCategory = interface:Category("Teleports")
+local serverhopSector = teleportCategory:Sector("Serverhop")
+serverhopSector:Cheat("Button", "Serverhop", function()
+    local servers = {}
+    local req = request({Url = string.format("https://games.roblox.com/v1/games/%d/servers/Public?sortOrder=Desc&limit=100&excludeFullGames=true", game.PlaceId)})
+    local body = game:GetService("HttpService"):JSONDecode(req.Body)
+
+    if body and body.data then
+        for _, v in next, body.data do
+            if type(v) == "table" and tonumber(v.playing) and tonumber(v.maxPlayers) and v.playing < v.maxPlayers and v.id ~= game.JobId then
+                table.insert(servers, 1, v.id)
+            end
+        end
+    end
+
+    if #servers > 0 then
+        game:GetService("TeleportService"):TeleportToPlaceInstance(game.PlaceId, servers[math.random(1, #servers)], game.Players.LocalPlayer)
+    end
+end)
 local teleportSector = teleportCategory:Sector("Points of Interest")
 local teleports = {
     ["Restaurant"] = Vector3.new(-241, 9, -288),

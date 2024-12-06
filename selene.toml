@@ -1,1 +1,3 @@
 std = "synapse"
+[lints]
+global_usage = "allow"

@@ -7,6 +7,9 @@ globals:
   firetouchinterest:
     args:
       - type: ...
+  fireclickdetector:
+    args:
+      - type: ...
   setreadonly:
     args:
       - type: ...

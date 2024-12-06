@@ -3,6 +3,10 @@ Feature Ideas:
 -- auto grinding for stands
 ]]
 
+if game.CreatorId ~= 15102772 then
+    return
+end
+
 local QUESTS = {
     ["Dummy Hater"] = {
         Name = "Dummy Hater";
@@ -196,10 +200,6 @@ local Players = game:GetService("Players")
 local Workspace = game:GetService("Workspace")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
-if not game:IsLoaded() then
-    game.Loaded:Wait()
-end
-
 local player = Players.LocalPlayer
 local items = Workspace.Items
 local npcs = Workspace.NPCs
@@ -208,15 +208,6 @@ local mobs = Workspace.Mobs
 local autofarmDummy = false
 local ongoingQuestActive = false
 local ongoingQuest = nil
-
-local teleportCheck = false
-Players.LocalPlayer.OnTeleport:Connect(function()
-    warn('works')
-	if not teleportCheck and queue_on_teleport then
-		teleportCheck = true
-		queue_on_teleport("loadstring(game:HttpGet('https://raw.githubusercontent.com/sadneo/roblox-scripts/refs/heads/main/ProjectJojo2/Main.lua'))()")
-	end
-end)
 
 local function findQuestItem(itemDetails)
     local npc = npcs:FindFirstChild(itemDetails.QuestNPC)

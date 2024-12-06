@@ -196,6 +196,10 @@ local Players = game:GetService("Players")
 local Workspace = game:GetService("Workspace")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
+if not game:IsLoaded() then
+    game.Loaded:Wait()
+end
+
 local player = Players.LocalPlayer
 local items = Workspace.Items
 local npcs = Workspace.NPCs

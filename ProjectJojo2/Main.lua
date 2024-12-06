@@ -1,7 +1,8 @@
---[[
-Feature Ideas:
+-- Neo's Project Jojo 2 Script
+-- Set autoclicker position for Dummy Farm to 1266,829
+
+-- Feature Ideas:
 -- auto grinding for stands
-]]
 
 if game.CreatorId ~= 15102772 then
     return
@@ -208,6 +209,19 @@ local mobs = Workspace.Mobs
 local autofarmDummy = false
 local ongoingQuestActive = false
 local ongoingQuest = nil
+local autoStat = false
+local autoStatType = "Power"
+
+ReplicatedStorage.Events.PlayerStats.UpdatePlayerExp.OnClientEvent:Connect(function()
+    if autoStat then
+        local infoContainer = player.PlayerGui.InGameMenu.Container.RightMenu.AbilityInfo.InfoContainer
+        local currentStat = tonumber(infoContainer[autoStatType]:FindFirstChildWhichIsA("TextBox").Text)
+        local unassignedStats = tonumber(infoContainer.Unassigned.TextLabel.UnassignedValue.Text)
+
+        local event = ReplicatedStorage.Events.Menu.ApplyStats
+        event:FireServer(autoStatType, currentStat+unassignedStats)
+    end
+end)
 
 local function findQuestItem(itemDetails)
     local npc = npcs:FindFirstChild(itemDetails.QuestNPC)
@@ -259,6 +273,7 @@ local function killDummy()
 
 	while autofarmDummy and dummy:FindFirstChild("HumanoidRootPart") do
         player.Character.PrimaryPart.Velocity = Vector3.new(0, 0, 0)
+        player.PlayerGui.InGameMenu.NextQuestAvaliable.Visible = false
         local at = dummy.HumanoidRootPart.Position - Vector3.new(0, 3, 0)
         local lookAt = Vector3.new(0, 1, 0)
         local upVector = dummy.HumanoidRootPart.CFrame.RightVector
@@ -340,6 +355,15 @@ autofarmSector:Cheat("Toggle", "Dummy Farm", function(value)
         task.wait(.4)
     end
 end)
+autofarmSector:Cheat("Toggle", "Autostat", function(value)
+    autoStat = value
+end)
+autofarmSector:Cheat("Dropdown", "Autostat Type", function(value)
+    autoStatType = value
+end, {
+    default = autoStatType,
+    options = {"Endurance",  "Power", "Special"}
+})
 
 
 local teleportCategory = interface:Category("Teleports")

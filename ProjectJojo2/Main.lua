@@ -211,6 +211,7 @@ local ongoingQuest = nil
 
 local teleportCheck = false
 Players.LocalPlayer.OnTeleport:Connect(function()
+    warn('works')
 	if not teleportCheck and queue_on_teleport then
 		teleportCheck = true
 		queue_on_teleport("loadstring(game:HttpGet('https://raw.githubusercontent.com/sadneo/roblox-scripts/refs/heads/main/ProjectJojo2/Main.lua'))()")

@@ -272,7 +272,7 @@ end
 local function getBestQuest()
     local level = tonumber(player.PlayerGui.PlayerStats.PlayerStatsContainer.Experience.Level.LevelValue.Text) or 50
     local questBestFit = nil
-    local questBestFitLevel = 0
+    local questBestFitLevel = -1
     for _, quest in QUESTS do
         local req = quest.LevelRequirement
         if level >= req and req > questBestFitLevel then

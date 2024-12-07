@@ -164,7 +164,7 @@ local ITEMS = {
 		QuestNPC = "Jobin Higashikata",
 	},
 }
-local VALUABLE_ITEMS = {"Aja Mask", "Dio Bone", "Requiem Arrow", "Sinners Soul", "Dio Diary", "Corpse Part"}
+local VALUABLE_ITEMS = {"Aja Mask", "Requiem Arrow", "Sinners Soul", "Dio Diary", "Corpse Part"}
 local TWEEN_VELOCITY_I_DONT_CARE = 200
 
 local Queue = {}

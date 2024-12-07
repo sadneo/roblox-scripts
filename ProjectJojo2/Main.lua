@@ -164,6 +164,7 @@ local ITEMS = {
 		QuestNPC = "Jobin Higashikata",
 	},
 }
+local TWEEN_VELOCITY_I_DONT_CARE = 200
 
 local Queue = {}
 Queue.__index = Queue
@@ -215,12 +216,19 @@ local ongoingQuestActive = false
 local ongoingQuest = nil
 local autoStat = false
 local autoStatType = "Power"
+local tweenVelocity = 31 -- safe default
 
-local function tweenTo(goalPosition, velocity)
-	velocity = velocity or 31
+local function tweenTo(goalPosition)
+    if tweenVelocity == TWEEN_VELOCITY_I_DONT_CARE then
+        player.Character:PivotTo(goalPosition)
+        player.Character.Humanoid:ChangeState(Enum.HumanoidStateType.StrafingNoPhysics)
+        player.Character.PrimaryPart.Velocity = Vector3.zero
+        return
+    end
+
 	local startPosition = player.Character.HumanoidRootPart.CFrame
 	local distance = (startPosition.Position - goalPosition.Position).Magnitude
-	local time = distance / velocity
+	local time = distance / tweenVelocity
 	local progress = 0
 
 	if distance < 5 then
@@ -249,8 +257,7 @@ local function safeTweenTo(goalPosition)
 	tweenTo(goalPosition)
 end
 
--- TODO: use safeTweenTo
-function grabAllItems()
+local function grabAllItems()
 	local saveCFrame = player.Character.PrimaryPart.CFrame
 	for _, item in items:GetChildren() do
 		if #player.Backpack:GetChildren() >= 30 then
@@ -259,11 +266,11 @@ function grabAllItems()
 
 		local part = item:FindFirstChildWhichIsA("BasePart", false)
 		local clickDetector = item:FindFirstChildWhichIsA("ClickDetector", true)
-		if not part or not clickDetector then
+		if not part or not clickDetector or not clickDetector.Parent then
 			continue
 		end
 
-		player.Character:MoveTo(part.Position)
+		safeTweenTo(part.CFrame)
 		task.wait(0.2)
 		fireclickdetector(clickDetector, 10)
 	end
@@ -359,7 +366,7 @@ local function getBestQuest()
 	return questBestFit
 end
 
-function showShop()
+local function showShop()
 	local frame = player.PlayerGui.Items.ShopFrame
 	frame.Visible = not frame.Visible
 end
@@ -392,6 +399,13 @@ local generalSector = mainCategory:Sector("General")
 generalSector:Cheat("Button", "Show Shop", showShop, { text = "Toggle" })
 generalSector:Cheat("Button", "Grab All Items", grabAllItems, { text = "Grab" })
 generalSector:Cheat("Label", "Press Delete to hide UI")
+generalSector:Cheat("Slider", "Lerp Velocity", function(value)
+    tweenVelocity = value
+end, {
+    default = tweenVelocity,
+    min = 20,
+    max = TWEEN_VELOCITY_I_DONT_CARE,
+})
 local autofarmSector = mainCategory:Sector("Autofarm")
 autofarmSector:Cheat("Toggle", "Dummy Farm", function(value)
 	autofarmDummy = value

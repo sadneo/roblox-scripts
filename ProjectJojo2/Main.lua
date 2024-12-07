@@ -208,9 +208,9 @@ local Workspace = game:GetService("Workspace")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local player = Players.LocalPlayer
-local items = Workspace.Items
-local npcs = Workspace.NPCs
-local mobs = Workspace.Mobs
+local items = Workspace:WaitForChild("Items")
+local npcs = Workspace:WaitForChild("NPCs")
+local mobs = Workspace:WaitForChild("Mobs")
 
 local autofarmDummy = false
 local ongoingQuestActive = false

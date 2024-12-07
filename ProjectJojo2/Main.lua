@@ -369,7 +369,7 @@ ReplicatedStorage.Events.PlayerStats.UpdatePlayerExp.OnClientEvent:Connect(funct
 end)
 
 local Finity = loadstring(
-	game:HttpGetAsync("https://raw.githubusercontent.com/bloodball/UI-Librarys/refs/heads/main/Finity%20UI%20Lib")
+	game:HttpGetAsync("https://raw.githubusercontent.com/sadneo/roblox-scripts/refs/heads/main/General/Finity.lua")
 )()
 print(("\n"):rep(100))
 

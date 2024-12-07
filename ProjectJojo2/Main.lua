@@ -456,7 +456,7 @@ local autofarmSector = mainCategory:Sector("Autofarm")
 autofarmSector:Cheat("Toggle", "Dummy Farm", function(value)
 	autofarmDummy = value
     if not autofarmDummy then
-        player.Character:PivotTo(CFrame.new(player.Character.Position + Vector3.new(0, 5, 0)))
+        player.Character:PivotTo(CFrame.new(player.Character.PrimaryPart.Position + Vector3.new(0, 5, 0)))
         player.Character.Humanoid:ChangeState(Enum.HumanoidStateType.Running)
     end
 
@@ -472,7 +472,7 @@ autofarmSector:Cheat("Toggle", "Dummy Farm", function(value)
 		else
 			getQuest()
 		end
-		task.wait(0.4)
+		task.wait()
 	end
 end)
 autofarmSector:Cheat("Toggle", "Autostat", function(value)

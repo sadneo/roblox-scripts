@@ -32,7 +32,7 @@ local QUESTS = {
 		NPCLink = "GyroDummyHater",
 		Dummies = { "Plastic Dummy (Level 1)", "Ethereal Dummy (Level 1)" },
 	},
-	Deforestation = {
+	["Deforestation"] = {
 		Name = "Deforestation",
 		LevelRequirement = 5,
 		CashReward = 2800,
@@ -216,19 +216,61 @@ local ongoingQuest = nil
 local autoStat = false
 local autoStatType = "Power"
 
-ReplicatedStorage.Events.PlayerStats.UpdatePlayerExp.OnClientEvent:Connect(function()
-	if autoStat then
-		local infoContainer = player.PlayerGui.InGameMenu.Container.RightMenu.AbilityInfo.InfoContainer
-		local currentStat = tonumber(infoContainer[autoStatType]:FindFirstChildWhichIsA("TextBox").Text)
-		local unassignedStats = tonumber(infoContainer.Unassigned.TextLabel.UnassignedValue.Text)
+local function tweenTo(goalPosition, velocity)
+	velocity = velocity or 31
+	local startPosition = player.Character.HumanoidRootPart.CFrame
+	local distance = (startPosition.Position - goalPosition.Position).Magnitude
+	local time = distance / velocity
+	local progress = 0
 
-        if unassignedStats > 0 then
-            local event = ReplicatedStorage.Events.Menu.ApplyStats
-            event:FireServer(autoStatType, math.min(200, currentStat + unassignedStats))
-        end
+	if distance < 5 then
+		player.Character:PivotTo(goalPosition)
+		player.Character.PrimaryPart.Velocity = Vector3.zero
+		return
 	end
-end)
 
+	while progress < time do
+		local pos = startPosition:Lerp(goalPosition, progress / time)
+		player.Character:PivotTo(pos)
+		player.Character.Humanoid:ChangeState(Enum.HumanoidStateType.StrafingNoPhysics)
+		progress += task.wait()
+	end
+	player.Character:PivotTo(goalPosition)
+	player.Character.PrimaryPart.Velocity = Vector3.zero
+end
+
+local function safeTweenTo(goalPosition)
+	local root = player.Character.PrimaryPart
+	local down1 = CFrame.new(root.Position.X, -20, root.Position.Z)
+	local down2 = CFrame.new(goalPosition.X, -20, goalPosition.Z)
+
+	tweenTo(down1)
+	tweenTo(down2)
+	tweenTo(goalPosition)
+end
+
+-- TODO: use safeTweenTo
+function grabAllItems()
+	local saveCFrame = player.Character.PrimaryPart.CFrame
+	for _, item in items:GetChildren() do
+		if #player.Backpack:GetChildren() >= 30 then
+			break
+		end
+
+		local part = item:FindFirstChildWhichIsA("BasePart", false)
+		local clickDetector = item:FindFirstChildWhichIsA("ClickDetector", true)
+		if not part or not clickDetector then
+			continue
+		end
+
+		player.Character:MoveTo(part.Position)
+		task.wait(0.2)
+		fireclickdetector(clickDetector, 10)
+	end
+	player.Character:PivotTo(saveCFrame)
+end
+
+-- TODO: use safeTweenTo
 local function findQuestItem(itemDetails)
 	local npc = npcs:FindFirstChild(itemDetails.QuestNPC)
 	local npcClickDetector = npc:FindFirstChildWhichIsA("ClickDetector", true)
@@ -304,26 +346,6 @@ local function getBestQuest()
 	return questBestFit
 end
 
-function grabAllItems()
-	local saveCFrame = player.Character.PrimaryPart.CFrame
-	for _, item in items:GetChildren() do
-		if #player.Backpack:GetChildren() >= 30 then
-			break
-		end
-
-		local part = item:FindFirstChildWhichIsA("BasePart", false)
-		local clickDetector = item:FindFirstChildWhichIsA("ClickDetector", true)
-		if not part or not clickDetector then
-			continue
-		end
-
-		player.Character:MoveTo(part.Position)
-		task.wait(0.2)
-		fireclickdetector(clickDetector, 10)
-	end
-	player.Character:PivotTo(saveCFrame)
-end
-
 function showShop()
 	local frame = player.PlayerGui.Items.ShopFrame
 	frame.Visible = not frame.Visible
@@ -331,6 +353,19 @@ end
 
 ReplicatedStorage.Events.Menu.UpdateQuest.OnClientEvent:Connect(function(_, info)
 	ongoingQuestActive = info[1]
+end)
+
+ReplicatedStorage.Events.PlayerStats.UpdatePlayerExp.OnClientEvent:Connect(function()
+	if autoStat then
+		local infoContainer = player.PlayerGui.InGameMenu.Container.RightMenu.AbilityInfo.InfoContainer
+		local currentStat = tonumber(infoContainer[autoStatType]:FindFirstChildWhichIsA("TextBox").Text)
+		local unassignedStats = tonumber(infoContainer.Unassigned.TextLabel.UnassignedValue.Text)
+
+		if unassignedStats > 0 then
+			local event = ReplicatedStorage.Events.Menu.ApplyStats
+			event:FireServer(autoStatType, math.min(200, currentStat + unassignedStats))
+		end
+	end
 end)
 
 local Finity = loadstring(

@@ -370,20 +370,24 @@ local function showShop()
 	frame.Visible = not frame.Visible
 end
 
+local function tryAllocateStats()
+    local infoContainer = player.PlayerGui.InGameMenu.Container.RightMenu.AbilityInfo.InfoContainer
+    local currentStat = tonumber(infoContainer[autoStatType]:FindFirstChildWhichIsA("TextBox").Text)
+    local unassignedStats = tonumber(infoContainer.Unassigned.TextLabel.UnassignedValue.Text)
+
+    if unassignedStats > 0 then
+        local event = ReplicatedStorage.Events.Menu.ApplyStats
+        event:FireServer(autoStatType, math.min(200, currentStat + unassignedStats))
+    end
+end
+
 ReplicatedStorage.Events.Menu.UpdateQuest.OnClientEvent:Connect(function(_, info)
 	ongoingQuestActive = info[1]
 end)
 
 ReplicatedStorage.Events.PlayerStats.UpdatePlayerExp.OnClientEvent:Connect(function()
 	if autoStat then
-		local infoContainer = player.PlayerGui.InGameMenu.Container.RightMenu.AbilityInfo.InfoContainer
-		local currentStat = tonumber(infoContainer[autoStatType]:FindFirstChildWhichIsA("TextBox").Text)
-		local unassignedStats = tonumber(infoContainer.Unassigned.TextLabel.UnassignedValue.Text)
-
-		if unassignedStats > 0 then
-			local event = ReplicatedStorage.Events.Menu.ApplyStats
-			event:FireServer(autoStatType, math.min(200, currentStat + unassignedStats))
-		end
+        tryAllocateStats()
 	end
 end)
 
@@ -433,6 +437,7 @@ autofarmSector:Cheat("Toggle", "Dummy Farm", function(value)
 end)
 autofarmSector:Cheat("Toggle", "Autostat", function(value)
 	autoStat = value
+    tryAllocateStats()
 end)
 autofarmSector:Cheat("Dropdown", "Autostat Type", function(value)
 	autoStatType = value

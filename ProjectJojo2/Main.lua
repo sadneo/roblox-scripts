@@ -292,6 +292,7 @@ local function findQuestItem(itemDetails)
 end
 
 local function getQuest()
+    player.PlayerGui.InGameMenu.NextQuestAvaliable.Visible = false
 	while autofarmDummy and not ongoingQuestActive do
 		player.Character.PrimaryPart.Velocity = Vector3.new(0, 0, 0)
 		local npc = npcs:FindFirstChild(ongoingQuest.NPCLink)
@@ -300,33 +301,45 @@ local function getQuest()
 			warn("NPC does not have click detector")
 		end
 
-		player.Character:MoveTo(npc.PrimaryPart.Position)
+		tweenTo(npc.PrimaryPart.CFrame + Vector3.new(0, 5, 0))
 		task.wait(0.2)
-		fireclickdetector(npcClickDetector, 5)
+		fireclickdetector(npcClickDetector, 8)
 		task.wait(0.4)
 	end
 end
 
 local function killDummy()
 	local dummy
-	for _, dummyName in ipairs(ongoingQuest.Dummies) do
-		local tryDummy = mobs:FindFirstChild(dummyName)
-		if tryDummy ~= nil then
-			dummy = tryDummy
+	local dummyDistance = math.huge
+	for _, mob in mobs:GetChildren() do
+		local distance = (player.Character.PrimaryPart.Position - mob.PrimaryPart.Position).Magnitude
+		if mob.Name == ongoingQuest.Dummies[1] and distance < dummyDistance then
+			dummy = mob
+			dummyDistance = distance
 		end
 	end
+	local betterDummy = mobs:FindFirstChild(ongoingQuest.Dummies[2])
+	if betterDummy then
+		dummy = betterDummy
+	end
+
 	if dummy == nil then
 		return
 	end
 
-	while autofarmDummy and dummy:FindFirstChild("HumanoidRootPart") do
+	while
+		autofarmDummy
+		and dummy:FindFirstChild("HumanoidRootPart")
+		and dummy:FindFirstChild("Humanoid")
+		and dummy.Humanoid.Health > 0
+	do
 		player.Character.PrimaryPart.Velocity = Vector3.new(0, 0, 0)
 		player.PlayerGui.InGameMenu.NextQuestAvaliable.Visible = false
 		local at = dummy.HumanoidRootPart.Position - Vector3.new(0, 3, 0)
 		local lookAt = Vector3.new(0, 1, 0)
 		local upVector = dummy.HumanoidRootPart.CFrame.RightVector
 		local cf = CFrame.lookAlong(at, lookAt, upVector)
-		player.Character:PivotTo(cf + cf.UpVector * 2)
+		tweenTo(cf + cf.UpVector * 2)
 		task.wait()
 	end
 	task.wait()
@@ -371,7 +384,6 @@ end)
 local Finity = loadstring(
 	game:HttpGetAsync("https://raw.githubusercontent.com/sadneo/roblox-scripts/refs/heads/main/General/Finity.lua")
 )()
-print(("\n"):rep(100))
 
 local interface = Finity.new(true, "Neo's Project Jojo 2", UDim2.fromOffset(450, 350))
 interface.ChangeToggleKey(Enum.KeyCode.Delete)
@@ -383,6 +395,11 @@ generalSector:Cheat("Label", "Press Delete to hide UI")
 local autofarmSector = mainCategory:Sector("Autofarm")
 autofarmSector:Cheat("Toggle", "Dummy Farm", function(value)
 	autofarmDummy = value
+    if not autofarmDummy then
+        player.Character:PivotTo(CFrame.new(player.Character.Position + Vector3.new(0, 5, 0)))
+        player.Character.Humanoid:ChangeState(Enum.HumanoidStateType.Running)
+    end
+
 	while autofarmDummy do
 		local tryQuest = getBestQuest()
 		if ongoingQuest ~= tryQuest then

@@ -458,14 +458,14 @@ serverhopSector:Cheat("Button", "Serverhop", function()
 end)
 local teleportSector = teleportCategory:Sector("Points of Interest")
 local teleports = {
-	["Restaurant"] = Vector3.new(-241, 9, -288),
-	["School"] = Vector3.new(-869, 6, 148),
-	["Fusion Area"] = Vector3.new(-1353, 9, -363),
-	["Mid"] = Vector3.new(15, 11, 84),
+	["Restaurant"] = CFrame.new(-241, 9, -288),
+	["School"] = CFrame.new(-869, 6, 148),
+	["Fusion Area"] = CFrame.new(-1353, 9, -363),
+	["Mid"] = CFrame.new(15, 11, 84),
 }
 for name, location in teleports do
 	teleportSector:Cheat("Button", name, function()
-		player.Character:MoveTo(location)
+		safeTweenTo(location)
 	end, { text = "Teleport" })
 end
 local questSector = teleportCategory:Sector("Quest Items")
@@ -483,7 +483,7 @@ for _, npc in npcs:GetChildren() do
 	end
 
 	npcTeleportSector:Cheat("Button", npc.Name, function()
-		local position = npc.PrimaryPart.Position
-		player.Character:MoveTo(position + Vector3.new(0, 5, 0))
+		local position = npc.PrimaryPart.CFrame
+		safeTweenTo(position + Vector3.new(0, 5, 0))
 	end)
 end

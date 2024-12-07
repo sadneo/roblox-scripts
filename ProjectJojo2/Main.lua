@@ -277,7 +277,6 @@ local function grabAllItems()
 	player.Character:PivotTo(saveCFrame)
 end
 
--- TODO: use safeTweenTo
 local function findQuestItem(itemDetails)
 	local npc = npcs:FindFirstChild(itemDetails.QuestNPC)
 	local npcClickDetector = npc:FindFirstChildWhichIsA("ClickDetector", true)
@@ -285,14 +284,14 @@ local function findQuestItem(itemDetails)
 		warn("NPC does not have click detector")
 	end
 
-	player.Character:MoveTo(npc.PrimaryPart.Position)
+	safeTweenTo(npc.PrimaryPart.CFrame + Vector3.new(0, 5, 0))
 	task.wait(0.2)
 	fireclickdetector(npcClickDetector, 5)
 	task.wait(2)
 
 	for _, itemInstance in workspace.NPCs[itemDetails.FolderName]:GetChildren() do
 		if itemInstance[itemDetails.Name].Transparency ~= 1 then
-			game.Players.LocalPlayer.Character:MoveTo(itemInstance.PrimaryPart.Position)
+			safeTweenTo(itemInstance.PrimaryPart.CFrame)
 			break
 		end
 	end

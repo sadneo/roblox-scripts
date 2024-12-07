@@ -164,6 +164,7 @@ local ITEMS = {
 		QuestNPC = "Jobin Higashikata",
 	},
 }
+local VALUABLE_ITEMS = {"Aja Mask", "Dio Bone", "Requiem Arrow", "Sinners Soul", "Dio Diary", "Corpse Part"}
 local TWEEN_VELOCITY_I_DONT_CARE = 200
 
 local Queue = {}
@@ -259,7 +260,16 @@ end
 
 local function grabAllItems()
 	local saveCFrame = player.Character.PrimaryPart.CFrame
-	for _, item in items:GetChildren() do
+    local sortedItems = items:GetChildren()
+    table.sort(sortedItems, function(item1, item2)
+        local pos1 = item1:FindFirstChildWhichIsA("BasePart").Position
+        local pos2 = item2:FindFirstChildWhichIsA("BasePart").Position
+        local playerPos = player.Character.PrimaryPart.Position
+        
+        return (playerPos - pos1).Magnitude < (playerPos - pos2).Magnitude
+    end)
+
+	for _, item in sortedItems do
 		if #player.Backpack:GetChildren() >= 30 then
 			break
 		end
@@ -267,6 +277,35 @@ local function grabAllItems()
 		local part = item:FindFirstChildWhichIsA("BasePart", false)
 		local clickDetector = item:FindFirstChildWhichIsA("ClickDetector", true)
 		if not part or not clickDetector or not clickDetector.Parent then
+			continue
+		end
+
+		safeTweenTo(part.CFrame)
+		task.wait(0.2)
+		fireclickdetector(clickDetector, 10)
+	end
+	player.Character:PivotTo(saveCFrame)
+end
+
+local function grabValuables()
+	local saveCFrame = player.Character.PrimaryPart.CFrame
+    local sortedItems = items:GetChildren()
+    table.sort(sortedItems, function(item1, item2)
+        local pos1 = item1:FindFirstChildWhichIsA("BasePart").Position
+        local pos2 = item2:FindFirstChildWhichIsA("BasePart").Position
+        local playerPos = player.Character.PrimaryPart.Position
+        
+        return (playerPos - pos1).Magnitude < (playerPos - pos2).Magnitude
+    end)
+
+	for _, item in sortedItems do
+		if #player.Backpack:GetChildren() >= 30 then
+			break
+		end
+
+		local part = item:FindFirstChildWhichIsA("BasePart", false)
+		local clickDetector = item:FindFirstChildWhichIsA("ClickDetector", true)
+		if not part or not clickDetector or not clickDetector.Parent or not table.find(VALUABLE_ITEMS, item.Name) then
 			continue
 		end
 
@@ -404,6 +443,7 @@ generalSector:Cheat("Button", "Fix Jump", function()
 end, { text = "Fix" })
 generalSector:Cheat("Button", "Show Shop", showShop, { text = "Toggle" })
 generalSector:Cheat("Button", "Grab All Items", grabAllItems, { text = "Grab" })
+generalSector:Cheat("Button", "Grab Valuables", grabValuables, { text = "Grab" })
 generalSector:Cheat("Label", "Press Delete to hide UI")
 generalSector:Cheat("Slider", "Lerp Velocity", function(value)
     tweenVelocity = value

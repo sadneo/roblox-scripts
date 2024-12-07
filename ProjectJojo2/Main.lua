@@ -222,8 +222,10 @@ ReplicatedStorage.Events.PlayerStats.UpdatePlayerExp.OnClientEvent:Connect(funct
 		local currentStat = tonumber(infoContainer[autoStatType]:FindFirstChildWhichIsA("TextBox").Text)
 		local unassignedStats = tonumber(infoContainer.Unassigned.TextLabel.UnassignedValue.Text)
 
-		local event = ReplicatedStorage.Events.Menu.ApplyStats
-		event:FireServer(autoStatType, currentStat + unassignedStats)
+        if unassignedStats > 0 then
+            local event = ReplicatedStorage.Events.Menu.ApplyStats
+            event:FireServer(autoStatType, math.min(200, currentStat + unassignedStats))
+        end
 	end
 end)
 
